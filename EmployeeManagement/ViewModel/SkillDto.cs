@@ -7,11 +7,9 @@ namespace EmployeeManagement.ViewModel
         public int Id { get; set; }
 
         public int YearExprience { get; set; }
-
-        [Required]
-        [StringLength(100)]
+      
         public string Name { get; set; }
-        [Required]
+      
         public string Description { get; set; }
     }
 }
