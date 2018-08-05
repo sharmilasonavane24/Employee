@@ -1,4 +1,4 @@
-﻿@model EmployeeManagement.ViewModel.EmployeeSkillDto
+﻿@model EmployeeManagement.Employee
 
 @{
     ViewBag.Title = "Edit";
@@ -8,7 +8,8 @@
 
 @using (Html.BeginForm())
 {
-
+    @Html.AntiForgeryToken()
+    
     <div class="form-horizontal">
         <h4>Employee</h4>
         <hr />

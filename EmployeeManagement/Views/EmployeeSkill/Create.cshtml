@@ -1,69 +1,4 @@
-﻿@*@model EmployeeManagement.EmployeeSkill
-
-    @{
-        ViewBag.Title = "Create";
-    }
-
-    <h2>Create</h2>
-
-
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-horizontal">
-            <h4>EmployeeSkill</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Employee.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Employee.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Employee.FirstName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Employee.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Employee.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Employee.LastName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Employee.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Employee.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Employee.PhoneNumber, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div>
-                @{
-                    Html.RenderPartial("~/Views/EmployeeSkill/_SkillList.cshtml");
-                }
-            </div>
-
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
-            </div>
-        </div>
-    }
-
-
-    <div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>
-
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }*@
-
-@model EmployeeManagement.EmployeeSkill
+﻿@model EmployeeManagement.ViewModel.EmployeeSkillDto
 
 @{
     ViewBag.Title = "Create";
@@ -72,84 +7,114 @@
 <h2>Create</h2>
 
 
-@using (Html.BeginForm("Create", "EmployeeSkill", FormMethod.Post, new {@id = "EmployeeSkillformPost"}))
+
+@using (Html.BeginForm("Create", "EmployeeSkill", FormMethod.Post, new { @id = "EmployeeSkillformPost" }))
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Employee</h4>
-        <hr/>
-        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
-        <div class="form-group">
-            @Html.LabelFor(model => model.Employee.FirstName, htmlAttributes: new {@class = "control-label col-md-2"})
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Employee.FirstName, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Employee.FirstName, "", new {@class = "text-danger"})
-            </div>
-        </div>
+   
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Employee.LastName, htmlAttributes: new {@class = "control-label col-md-2"})
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Employee.LastName, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Employee.LastName, "", new {@class = "text-danger"})
-            </div>
-        </div>
+<div >
+    <h4>NewEmpSkill</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <table>
+        <tr>
+            <td>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-10" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Employee.PhoneNumber, htmlAttributes: new {@class = "control-label col-md-2"})
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Employee.PhoneNumber, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Employee.PhoneNumber, "", new {@class = "text-danger"})
-            </div>
-        </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-10" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default"/>
-            </div>
-        </div>
-    </div>
+                <div class="form-group">
+                    
+                    @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new {@class = "control-label col-md-10"})
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.PhoneNumber, new {htmlAttributes = new {@class = "form-control"}})
+                        @Html.ValidationMessageFor(model => model.PhoneNumber, "", new {@class = "text-danger"})
+                    </div>
+                </div>
+            </td>
+            <td>
+                @for (int i = 0; i < Model.Skilllist.Count; i++)
+                {
 
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    SelectList skillSet = ViewBag.SkillId;
 
-      
-        <div class="form-group">
-            @Html.LabelFor(model => model.SkillId, "SkillId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SkillId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-10">
-                YearsExperience: <input type="text" name="YearsExperience" value="1">
-                
-            </div>
-        </div>
-      
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="AddMoreSkill" class="btn btn-default" />
-        </div>
-    </div>
-    @*<div id="Skill1">
-        @{
-            Html.RenderPartial("~/Views/EmployeeSkill/_SkillList.cshtml");
-        }
-    </div>
-    <div id ="Skill2">
-        @{
-            Html.RenderPartial("~/Views/EmployeeSkill/_SkillList.cshtml");
-        }
-    </div>*@
-    <div>
-       @ {string ret = RenderPartialToString("~/Views/EmployeeSkill/_SkillList.cshtml", model);}
-    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => Model.Skilllist[i].Id, "Name", htmlAttributes: new { @class = "control-label col-md-10" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => Model.Skilllist[i].Id, skillSet, htmlAttributes: new { @class = "form-control" })
+                            @*@Html.DropDownList("Name", skillSet, htmlAttributes: new { @class = "form-control" })*@
+                            @Html.ValidationMessageFor(model => Model.Skilllist[i].Id, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => Model.Skilllist[i].YearExprience, htmlAttributes: new { @class = "control-label col-md-10" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => Model.Skilllist[i].YearExprience, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => Model.Skilllist[i].YearExprience, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            @*<input type="image" src="~/delete.png"   value="@i" name="submit" class="btn btn-default" >*@
+                            <div class="col-md-offset-2 col-md-10"></div>
+                            <button value="@i" name="submit" class="btn btn-default">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+
+                        </div>
+                    </div>
+
+                }
+            </td>
+        </tr>
+        <tr>
+            <td>
+               
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-2">
+                        <input type="submit" value="Create" name="submit" class="btn btn-default" />
+                    </div>
+               
+                    <div class="col-md-offset-2 col-md-2">
+                        <input type="submit" value="Cancel" name="submit" class="btn btn-default" />
+                    </div>
+                </div>
+            </td>
+            <td> <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="AddMoreSkill" name="submit" class="btn btn-default" />
+                </div>
+            </div></td>
+        </tr>
+
+    </table>
+
+
+
+
+  
+
+
+
+    
+</div>
 }
+
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
@@ -157,4 +122,3 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
-

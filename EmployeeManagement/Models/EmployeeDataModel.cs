@@ -29,6 +29,5 @@ namespace EmployeeManagement
                 .WillCascadeOnDelete(false);
         }
 
-        public System.Data.Entity.DbSet<EmployeeManagement.Models.Dto.EmployeeSkillDto> EmployeeSkillDtoes { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EmployeeManagement.EmployeeSkill>
+﻿@model List<EmployeeManagement.ViewModel.EmployeeSkillDto> 
 
 @{
     ViewBag.Title = "Index";
@@ -12,34 +12,33 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Employee.FirstName)
+            @Html.DisplayName("FirstNme")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Skill.Name)
+            @Html.DisplayName("LastName")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.YearsExperience)
+            @Html.DisplayName("PhoneNumber")
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Employee.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Skill.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.YearsExperience)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
+            </td>
+        </tr>
+    }
 
 </table>

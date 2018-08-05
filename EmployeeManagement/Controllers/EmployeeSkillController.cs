@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using EmployeeManagement;
+using EmployeeManagement.ViewModel;
 
 namespace EmployeeManagement.Controllers
 {
@@ -14,116 +13,166 @@ namespace EmployeeManagement.Controllers
     {
         private EmployeeDataModel db = new EmployeeDataModel();
 
-        // GET: EmployeeSkill
         public ActionResult Index()
         {
-            var employeeSkills = db.EmployeeSkills.Include(e => e.Employee).Include(e => e.Skill);
-            return View(employeeSkills.ToList());
+            var employeeSkillDtoes = new List<EmployeeSkillDto>();
+            foreach (var dbEmp in db.Employees)
+            {
+
+                employeeSkillDtoes.Add(new EmployeeSkillDto()
+                {
+                    Id = dbEmp.Id,
+                    FirstName = dbEmp.FirstName,
+                    LastName = dbEmp.LastName,
+                    PhoneNumber = dbEmp.PhoneNumber
+                });
+            }
+
+            return View(employeeSkillDtoes.ToList());
         }
 
-        // GET: EmployeeSkill/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EmployeeSkill employeeSkill = db.EmployeeSkills.Find(id);
-            if (employeeSkill == null)
+            EmployeeSkill employeeSkillDto = db.EmployeeSkills.Find(id);
+            if (employeeSkillDto == null)
             {
                 return HttpNotFound();
             }
-            return View(employeeSkill);
+            return View(employeeSkillDto);
         }
 
-        // GET: EmployeeSkill/Create
         public ActionResult Create()
         {
-            ViewBag.EmployeeId = new SelectList(db.Employees, "Id", "FirstName");
-            ViewBag.SkillId = new SelectList(db.Skills, "Id", "Name");
-            return View();
+            List<SelectListItem> skills = new List<SelectListItem>();
+
+            foreach (var dbSkill in db.Skills)
+            {
+                skills.Add(new SelectListItem() { Text = dbSkill.Name, Value = dbSkill.Id.ToString() });
+            }
+          
+            ViewBag.SkillId = new SelectList(skills, "Value", "Text");
+            
+            ViewModel.EmployeeSkillDto newEmpSkill = new ViewModel.EmployeeSkillDto();
+            newEmpSkill.Skilllist = new List<SkillDto>();
+            newEmpSkill.Skilllist.Add(new SkillDto());
+            return View(newEmpSkill);
+
         }
 
-        // POST: EmployeeSkill/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(EmployeeSkill employeeSkill, List<Skill> skills)
+        public ActionResult Create(ViewModel.EmployeeSkillDto employeeSkillDto, string submit)
         {
-
-            if (ModelState.IsValid)
+            List<SelectListItem> skills = new List<SelectListItem>();
+            foreach (var dbSkill in db.Skills)
             {
-               // db.EmployeeSkills.Add(employeeSkill);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                skills.Add(new SelectListItem() { Text = dbSkill.Name, Value = dbSkill.Id.ToString() });
             }
 
-         //   ViewBag.EmployeeId = new SelectList(db.Employees, "Id", "FirstName", employeeSkill.EmployeeId);
-//ViewBag.SkillId = new SelectList(db.Skills, "Id", "Name", employeeSkill.SkillId);
-            return View(employeeSkill);
+            ViewBag.SkillId = new SelectList(skills, "Value", "Text");
+            
+
+            switch (submit)
+            {
+                case "Cancel":
+                    return RedirectToAction("Index");
+                case "AddMoreSkill":
+
+                    employeeSkillDto.Skilllist.Add(new SkillDto());
+
+                    return View(employeeSkillDto);
+                case "Create":
+                    if (ModelState.IsValid)
+                    {
+                        var newEmployee = new Employee()
+                        {
+                            FirstName = employeeSkillDto.FirstName,
+                            LastName = employeeSkillDto.LastName,
+                            PhoneNumber = employeeSkillDto.PhoneNumber
+                        };
+
+                        db.Employees.Add(newEmployee);
+                        db.SaveChanges();
+
+                        var selectNewEmplyee =
+                            db.Employees.FirstOrDefault(e => e.FirstName == employeeSkillDto.FirstName &&
+                                                             e.LastName == employeeSkillDto.LastName);
+
+                        foreach (var empSkill in employeeSkillDto.Skilllist)
+                        {
+                            var newEmpSkill = new EmployeeSkill()
+                            {
+
+                                Employee = selectNewEmplyee,
+                                EmployeeId = selectNewEmplyee.Id,
+                                SkillId = empSkill.Id,
+                                YearsExperience = empSkill.YearExprience
+                            };
+                            db.EmployeeSkills.Add(newEmpSkill);
+                            db.SaveChanges();
+                        }
+
+                        return RedirectToAction("Index");
+                    }
+
+                    ViewBag.EmployeeId = new SelectList(db.Employees, "Id", "FirstName", employeeSkillDto.EmployeeId);
+                    return View(employeeSkillDto);
+                default:
+                    int index = Convert.ToInt32(submit);
+                    var removeItem = employeeSkillDto.Skilllist[index];
+                    if (employeeSkillDto.Skilllist.Count > 1)
+                    {
+                        employeeSkillDto.Skilllist.Remove(removeItem);
+                    }
+                    return View(employeeSkillDto);
+            }
+
+            
         }
 
-        // GET: EmployeeSkill/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EmployeeSkill employeeSkill = db.EmployeeSkills.Find(id);
-            if (employeeSkill == null)
+            Employee employee = db.Employees.Find(id);
+            if (employee == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.EmployeeId = new SelectList(db.Employees, "Id", "FirstName", employeeSkill.EmployeeId);
-            ViewBag.SkillId = new SelectList(db.Skills, "Id", "Name", employeeSkill.SkillId);
-            return View(employeeSkill);
+          var  employeeSkillDto =new EmployeeSkillDto()
+            {
+                FirstName = employee.FirstName,LastName = employee.LastName,PhoneNumber = employee.PhoneNumber
+            };
+            return View(employeeSkillDto);
         }
 
-        // POST: EmployeeSkill/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,EmployeeId,SkillId,YearsExperience")] EmployeeSkill employeeSkill)
+         public ActionResult Edit( EmployeeSkillDto employee)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(employeeSkill).State = EntityState.Modified;
+                var dbEmp = db.Employees.Find(employee.Id);
+
+                if (dbEmp != null)
+                {
+                    dbEmp.FirstName = employee.FirstName;
+                    dbEmp.LastName = employee.LastName;
+                    dbEmp.PhoneNumber = employee.PhoneNumber;
+
+                }
+
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.EmployeeId = new SelectList(db.Employees, "Id", "FirstName", employeeSkill.EmployeeId);
-            ViewBag.SkillId = new SelectList(db.Skills, "Id", "Name", employeeSkill.SkillId);
-            return View(employeeSkill);
+            return View(employee);
         }
 
-        // GET: EmployeeSkill/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            EmployeeSkill employeeSkill = db.EmployeeSkills.Find(id);
-            if (employeeSkill == null)
-            {
-                return HttpNotFound();
-            }
-            return View(employeeSkill);
-        }
-
-        // POST: EmployeeSkill/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            EmployeeSkill employeeSkill = db.EmployeeSkills.Find(id);
-            db.EmployeeSkills.Remove(employeeSkill);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
 
         protected override void Dispose(bool disposing)
         {
